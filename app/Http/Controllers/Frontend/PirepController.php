@@ -455,4 +455,25 @@ class PirepController extends Controller
         $this->pirepSvc->submit($pirep);
         return redirect(route('frontend.pireps.show', ['id' => $pirep->id]));
     }
+    
+    /**
+     * Show last landing page
+     * 
+     * @param Request $request
+     * 
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function lastLandings(Request $request)
+    {
+        $where[] = ['state', '<>', PirepState::CANCELLED];
+
+        $this->pirepRepo->pushCriteria(new WhereCriteria($request, $where));
+        $pireps = $this->pirepRepo->with(['airline', 'dpt_airport', 
+            'arr_airport', 'user'])->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        return view('pireps.last_landing', [
+            'pireps' => $pireps,
+        ]);
+    }
 }

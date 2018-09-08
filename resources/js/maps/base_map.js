@@ -13,7 +13,8 @@ export default (opts) => {
         layers: [],
         set_marker: false,
         providers: [
-            'Esri.WorldStreetMap',
+            //'Esri.WorldStreetMap',
+            'OpenStreetMap.BlackAndWhite',
         ],
         tile_layers: [],
     }, opts);

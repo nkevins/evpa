@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Enums\JournalType;
 use App\Models\Enums\PirepState;
 use App\Models\Traits\JournalTrait;
+use Carbon;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laratrust\Traits\LaratrustUserTrait;
@@ -217,5 +218,19 @@ class User extends Authenticatable
     public function rank()
     {
         return $this->belongsTo(Rank::class, 'rank_id');
+    }
+    
+    /**
+     * Get user citizenship status
+     * 
+     * @return string
+     */
+    public function getCitizenshipStatus()
+    {
+        if (Carbon\Carbon::now()->diffInDays(Carbon\Carbon::parse($this->created_at)) <= 365) {
+            return "Short-term permit";
+        } else {
+            return "Residence permit";
+        }
     }
 }

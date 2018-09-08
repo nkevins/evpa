@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Interfaces\Controller;
+use App\Models\Bid;
+use App\Repositories\Criteria\WhereCriteria;
+use App\Repositories\FlightRepository;
 use App\Repositories\PirepRepository;
+use App\Services\GeoService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -11,16 +16,24 @@ use Illuminate\Support\Facades\Auth;
  */
 class DashboardController extends Controller
 {
-    private $pirepRepo;
+    private $pirepRepo,
+            $flightRepo,
+            $geoSvc;
 
     /**
      * DashboardController constructor.
      *
      * @param PirepRepository $pirepRepo
      */
-    public function __construct(PirepRepository $pirepRepo)
+    public function __construct(
+        PirepRepository $pirepRepo, 
+        FlightRepository $flightRepo,
+        GeoService $geoSvc
+    )
     {
         $this->pirepRepo = $pirepRepo;
+        $this->flightRepo = $flightRepo;
+        $this->geoSvc = $geoSvc;
     }
 
     /**
@@ -43,6 +56,56 @@ class DashboardController extends Controller
             'user'            => $user,
             'current_airport' => $current_airport,
             'last_pirep'      => $last_pirep,
+        ]);
+    }
+    
+    /**
+     * Show the application dashboard.
+     */
+    public function indexEpva(Request $request)
+    {
+        $last_pirep = null;
+        $user = Auth::user();
+        
+        // Get last pirep
+        $last_pirep = $this->pirepRepo->getLastPirep($user, 5);
+
+        // Get the current airport for the weather
+        $current_airport = $user->curr_airport_id ?? $user->home_airport_id;
+        
+        // Get random flights
+        $departureAirport = null;
+        if (setting('pilots.only_flights_from_current')) {
+           $departureAirport = Auth::user()->curr_airport_id;
+        }
+        $flights = $this->flightRepo->getRandomFlight(Auth::user()->airline_id);
+        
+        // Get voyage map data
+        $voyageMapData = $this->pirepRepo->getVoyageMapData($user);
+        $map_features = $this->geoSvc->voyageGeoJson($voyageMapData);
+        
+        $center_coords = setting('acars.center_coords', '0,0');
+        $center_coords = array_map(function ($c) {
+            return (float) trim($c);
+        }, explode(',', $center_coords));
+        
+        // Get current bid
+        $bids = Bid::where(['user_id' => $user->id])
+            ->with(['flight', 'flight.airline'])->get();
+        
+        // Get statistic
+        $statistics = $this->pirepRepo->getUserPirepStatistic($user);
+
+        return view('dashboard.index', [
+            'user'            => $user,
+            'current_airport' => $current_airport,
+            'last_pirep'      => $last_pirep,
+            'flights'         => $flights,
+            'map_features'    => $map_features,
+            'bids'            => $bids,
+            'stats'           => $statistics,
+            'center'          => $center_coords,
+            'zoom'            => setting('acars.default_zoom', 5),
         ]);
     }
 }

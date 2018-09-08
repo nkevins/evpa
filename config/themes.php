@@ -28,6 +28,10 @@ return [
         'default' => [
             'extends' => 'false',
         ],
+        
+        'slim' => [
+        	'extends'	=> 'default'	
+    	],
 
                 // Add your themes here. These settings will override theme.json settings defined for each theme
 

@@ -60,4 +60,43 @@ class AirportController extends Controller
             'outbound_flights' => $outbound_flights,
         ]);
     }
+    
+    /**
+     * Show the airport
+     *
+     * @param mixed $id
+     *
+     * @return mixed
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+     */
+    public function showEvpa($id, Request $request)
+    {
+        $id = strtoupper($id);
+
+        $airport = $this->airportRepo->find($id);
+        if (empty($airport)) {
+            Flash::error('Airport not found!');
+            return redirect(route('frontend.dashboard.index'));
+        }
+
+        $inbound_flights = $this->flightRepo
+            ->with(['dpt_airport', 'arr_airport', 'airline'])
+            ->orderBy('arr_time')
+            ->findWhere([
+                'arr_airport_id' => $id,
+            ])->all();
+
+        $outbound_flights = $this->flightRepo
+            ->with(['dpt_airport', 'arr_airport', 'airline'])
+            ->orderBy('dpt_time')
+            ->findWhere([
+                'dpt_airport_id' => $id,
+            ])->all();
+
+        return view('airports.show', [
+            'airport'          => $airport,
+            'inbound_flights'  => $inbound_flights,
+            'outbound_flights' => $outbound_flights,
+        ]);
+    }
 }

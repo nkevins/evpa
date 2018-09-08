@@ -6,14 +6,7 @@
 Route::group([
     'namespace' => 'Frontend', 'prefix' => '', 'as' => 'frontend.',
 ], function () {
-    Route::get('/', 'HomeController@index')->name('home');
-    Route::get('r/{id}', 'PirepController@show')->name('pirep.show.public');
-    Route::get('p/{id}', 'ProfileController@show')->name('profile.show.public');
-
-    Route::get('users', 'UserController@index')->name('users.index');
-    Route::get('pilots', 'UserController@index')->name('pilots.index');
-
-    Route::get('livemap', 'AcarsController@index')->name('livemap.index');
+    Route::get('/', 'HomeController@indexEpva')->name('home');
 });
 
 /*
@@ -23,17 +16,27 @@ Route::group([
     'namespace'  => 'Frontend', 'prefix' => '', 'as' => 'frontend.',
     'middleware' => ['role:admin|user'],
 ], function () {
-    Route::resource('dashboard', 'DashboardController');
+    Route::get('dashboard', 'DashboardController@indexEpva');
+    
+    Route::get('r/{id}', 'PirepController@show')->name('pirep.show.public');
+    Route::get('p/{id}', 'ProfileController@show')->name('profile.show.public');
 
-    Route::get('airports/{id}', 'AirportController@show')->name('airports.show');
+    Route::get('users', 'UserController@indexEvpa')->name('users.index');
+    Route::get('pilots', 'UserController@index')->name('pilots.index');
+
+    Route::get('livemap', 'AcarsController@index')->name('livemap.index');
+
+    Route::get('airports/{id}', 'AirportController@showEvpa')->name('airports.show');
 
     // Download a file
     Route::get('downloads', 'DownloadController@index')->name('downloads.index');
     Route::get('downloads/{id}', 'DownloadController@show')->name('downloads.download');
 
-    Route::get('flights/bids', 'FlightController@bids')->name('flights.bids');
-    Route::get('flights/search', 'FlightController@search')->name('flights.search');
-    Route::resource('flights', 'FlightController');
+    Route::get('flights/bids', 'FlightController@bidsEvpa')->name('flights.bids');
+    Route::get('flights/search', 'FlightController@searchEvpa')->name('flights.search');
+    //Route::resource('flights', 'FlightController');
+    Route::get('flights', 'FlightController@indexEvpa')->name('flights.index');
+    Route::get('flights/{id}', 'FlightController@show')->name('flights.show');
 
     Route::get('pireps/fares', 'PirepController@fares');
     Route::resource('pireps', 'PirepController');
@@ -42,6 +45,11 @@ Route::group([
     Route::get('profile/regen_apikey', 'ProfileController@regen_apikey')
         ->name('profile.regen_apikey');
     Route::resource('profile', 'ProfileController');
+    
+    // Customized
+    Route::get('promotions', 'UserController@promotions');
+    Route::get('last_landings', 'PirepController@lastLandings');
+    Route::get('statistics', 'StatisticController@index');
 });
 
 Auth::routes();

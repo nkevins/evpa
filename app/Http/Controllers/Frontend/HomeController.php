@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Interfaces\Controller;
 use App\Models\User;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class HomeController
@@ -25,5 +26,17 @@ class HomeController extends Controller
         return view('home', [
             'users' => $users,
         ]);
+    }
+    
+    /**
+     * Show the application dashboard.
+     */
+    public function indexEpva()
+    {
+        if (Auth::user()) {
+            return redirect('dashboard');
+        }
+        
+        return view ('home');
     }
 }

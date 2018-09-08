@@ -384,4 +384,39 @@ class GeoService extends Service
             'actual_route_line'   => $actual->getLine(),
         ];
     }
+    
+    /**
+     * Return a GeoJSON FeatureCollection for a voyage map
+     * 
+     * @param $voyages
+     * 
+     * @return array
+     */
+    public function voyageGeoJson($voyages) 
+    {
+        $routes = array();
+        $route = new GeoJson();
+
+        foreach ($voyages as $v) {
+            ## Departure Airport
+            $route->addPoint($v->dep_lat, $v->dep_lon, [
+                'name'  => $v->dep_icao,
+                'popup' => $v->dep_name,
+                'icon'  => 'airport',
+            ]);
+            
+            ## Destination Airport
+            $route->addPoint($v->des_lat, $v->des_lon, [
+                'name'  => $v->des_icao,
+                'popup' => $v->des_name,
+                'icon'  => 'airport',
+            ]);
+            
+            array_push($routes, ['route_points' => $route->getPoints(), 
+                'planned_route_line' => $route->getLine()]);
+        }
+        
+
+        return $routes;
+    }
 }

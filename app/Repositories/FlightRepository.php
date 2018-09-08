@@ -59,6 +59,29 @@ class FlightRepository extends Repository implements CacheableInterface
 
         return $this->findWhere($where);
     }
+    
+    /**
+     * Get 5 random schedule
+     * 
+     * @param      $airline_id
+     * @param null $departure_airport
+     * 
+     * @return Flight
+     */ 
+    public function getRandomFlight($airline_id, $departure_airport = null)
+    {
+        $where = [
+            'airline_id'    => $airline_id,
+            'active'        => true,
+        ];
+        
+        if (filled($departure_airport)) {
+            $where['dpt_airport_id'] = $departure_airport;
+        }
+        
+        return Flight::inRandomOrder()->where($where)
+            ->with('subfleets', 'airline')->take(5)->get();
+    }
 
     /**
      * Create the search criteria and return this with the stuff pushed
