@@ -73,6 +73,7 @@ class Pirep extends Model
         'route_leg',
         'dpt_airport_id',
         'arr_airport_id',
+        'alt_airport_id',
         'level',
         'distance',
         'planned_distance',
@@ -228,7 +229,8 @@ class Pirep extends Model
     {
         if ($value instanceof Distance) {
             $this->attributes['distance'] = $value->toUnit(
-                config('phpvms.internal_units.distance'));
+                config('phpvms.internal_units.distance')
+            );
         } else {
             $this->attributes['distance'] = $value;
         }
@@ -361,7 +363,7 @@ class Pirep extends Model
      *
      * @param $value
      */
-    public function setFuelUsedAttribute($value)
+    public function setFuelUsedAttribute($value): void
     {
         if ($value instanceof Fuel) {
             $this->attributes['fuel_used'] = $value->toUnit(
@@ -377,7 +379,7 @@ class Pirep extends Model
      *
      * @param $value
      */
-    public function setPlannedDistanceAttribute($value)
+    public function setPlannedDistanceAttribute($value): void
     {
         if ($value instanceof Distance) {
             $this->attributes['planned_distance'] = $value->toUnit(
@@ -473,6 +475,11 @@ class Pirep extends Model
     public function arr_airport()
     {
         return $this->belongsTo(Airport::class, 'arr_airport_id');
+    }
+
+    public function alt_airport()
+    {
+        return $this->belongsTo(Airport::class, 'alt_airport_id');
     }
 
     public function dpt_airport()
