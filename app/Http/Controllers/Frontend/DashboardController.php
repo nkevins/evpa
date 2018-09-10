@@ -17,8 +17,7 @@ use Illuminate\Support\Facades\Auth;
 class DashboardController extends Controller
 {
     private $pirepRepo,
-            $flightRepo,
-            $geoSvc;
+            $flightRepo;
 
     /**
      * DashboardController constructor.
@@ -27,13 +26,11 @@ class DashboardController extends Controller
      */
     public function __construct(
         PirepRepository $pirepRepo, 
-        FlightRepository $flightRepo,
-        GeoService $geoSvc
+        FlightRepository $flightRepo
     )
     {
         $this->pirepRepo = $pirepRepo;
         $this->flightRepo = $flightRepo;
-        $this->geoSvc = $geoSvc;
     }
 
     /**
@@ -80,15 +77,6 @@ class DashboardController extends Controller
         }
         $flights = $this->flightRepo->getRandomFlight(Auth::user()->airline_id);
         
-        // Get voyage map data
-        $voyageMapData = $this->pirepRepo->getVoyageMapData($user);
-        $map_features = $this->geoSvc->voyageGeoJson($voyageMapData);
-        
-        $center_coords = setting('acars.center_coords', '0,0');
-        $center_coords = array_map(function ($c) {
-            return (float) trim($c);
-        }, explode(',', $center_coords));
-        
         // Get current bid
         $bids = Bid::where(['user_id' => $user->id])
             ->with(['flight', 'flight.airline'])->get();
@@ -101,11 +89,8 @@ class DashboardController extends Controller
             'current_airport' => $current_airport,
             'last_pirep'      => $last_pirep,
             'flights'         => $flights,
-            'map_features'    => $map_features,
             'bids'            => $bids,
             'stats'           => $statistics,
-            'center'          => $center_coords,
-            'zoom'            => setting('acars.default_zoom', 5),
         ]);
     }
 }

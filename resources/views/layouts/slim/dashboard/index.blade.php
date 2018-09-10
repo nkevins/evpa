@@ -165,7 +165,11 @@
                     <i class="fas fa-map"></i> Maps
                 </div><!-- card-header -->
                 <div class="card-body bd bd-t-0">
-                    <div id="map" style="width: 100%; height: 300px"></div>
+                    {{ Widget::VoyageMap([
+                        'width' => '100%',
+                        'height' => '300px',
+                        'user' => $user,
+                    ]) }}
                 </div><!-- card-body -->
             </div><!-- card -->
         </div>
@@ -353,13 +357,6 @@
 @endsection
 
 @section('scripts')
-    <script>
-        phpvms.map.render_voyage_map({
-            center: ['{{ $center[0] }}', '{{ $center[1] }}'],
-            zoom: '{{ $zoom }}',
-            routes: {!! json_encode($map_features) !!},
-        });
-    </script>
     <script>
         $(document).ready(function () {
             $("button.save_flight").click(function (e) {
