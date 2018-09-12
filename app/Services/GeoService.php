@@ -9,6 +9,7 @@ use App\Models\Flight;
 use App\Models\GeoJson;
 use App\Models\Pirep;
 use App\Repositories\AcarsRepository;
+use App\Repositories\AirportRepository;
 use App\Repositories\NavdataRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
@@ -23,6 +24,7 @@ class GeoService extends Service
 {
     private $acarsRepo;
     private $navRepo;
+    private $airportRepo;
 
     /**
      * GeoService constructor.
@@ -32,10 +34,12 @@ class GeoService extends Service
      */
     public function __construct(
         AcarsRepository $acarsRepo,
-        NavdataRepository $navRepo
+        NavdataRepository $navRepo,
+        AirportRepository $airportRepo
     ) {
         $this->acarsRepo = $acarsRepo;
         $this->navRepo = $navRepo;
+        $this->airportRepo = $airportRepo;
     }
 
     /**
@@ -418,5 +422,50 @@ class GeoService extends Service
         
 
         return $routes;
+    }
+    
+    /**
+     * Return a GeoJSON FeatureCollection for airport points
+     * 
+     * @param $airports
+     * 
+     * @return array
+     */
+    public function scheduleMapAirportGeoJson($airports)
+    {
+        $apts = new GeoJson();
+        
+        foreach ($airports as $a) {
+            $apts->addPoint($a->lat, $a->lon, [
+                'name'  => $a->icao,
+                'popup' => $a->icao.' - '.$a->name,
+                'icon'  => 'airport',
+            ]);
+        }
+        
+        return $apts->getPoints();
+    }
+    
+    /**
+     * Return a GeoJSON FeatureCollection for route lines
+     * from a departure point to all destinations
+     * 
+     * @param $departure
+     * @param $destinations
+     * 
+     * @return array
+     */
+    public function scheduleMapRouteGeoJson($departure, $destinations)
+    {
+        $dep = $this->airportRepo->find($departure);
+        
+        $routes = new GeoJson();
+        
+        foreach ($destinations as $arr) {
+            $routes->addPoint($dep->lat, $dep->lon, []);
+            $routes->addPoint($arr->lat, $arr->lon, []);
+        }
+        
+        return $routes->getLine();
     }
 }

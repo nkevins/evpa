@@ -8,6 +8,7 @@ use App\Interfaces\Controller;
 use App\Repositories\Criteria\WhereCriteria;
 use App\Repositories\FlightRepository;
 use App\Services\FlightService;
+use App\Services\GeoService;
 use Auth;
 use Illuminate\Http\Request;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -20,6 +21,7 @@ class FlightController extends Controller
 {
     private $flightRepo;
     private $flightSvc;
+    private $geoSvc;
 
     /**
      * FlightController constructor.
@@ -29,10 +31,12 @@ class FlightController extends Controller
      */
     public function __construct(
         FlightRepository $flightRepo,
-        FlightService $flightSvc
+        FlightService $flightSvc,
+        GeoService $geoSvc
     ) {
         $this->flightRepo = $flightRepo;
         $this->flightSvc = $flightSvc;
+        $this->geoSvc = $geoSvc;
     }
 
     /**
@@ -133,5 +137,38 @@ class FlightController extends Controller
         $route = $this->flightSvc->getRoute($flight);
 
         return NavdataResource::collection($route);
+    }
+    
+    /**
+     * Get all airport points flown by an airline
+     *
+     * @param         $airline_id
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function route_airports_geojson($airline_id, Request $request)
+    {
+        $airports = $this->flightRepo->getFlightAirport($airline_id);
+        $map_features = $this->geoSvc->scheduleMapAirportGeoJson($airports);
+        
+        return $map_features;
+    }
+    
+    /**
+     * Get all route lines from a departure airport
+     *
+     * @param         $airline_id
+     * @param         $departure
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function route_destination_geojson($airline_id, $departure, Request $request)
+    {
+        $destination_airports = $this->flightRepo->getDestinationAirport($airline_id, $departure);
+        $map_features = $this->geoSvc->scheduleMapRouteGeoJson($departure, $destination_airports);
+        
+        return $map_features;
     }
 }

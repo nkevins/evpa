@@ -10,10 +10,12 @@ import render_airspace_map from './airspace_map'
 import render_live_map from './live_map'
 import render_route_map from './route_map'
 import render_voyage_map from './voyage_map'
+import render_schedule_map from './schedule_map'
 
 export {
   render_airspace_map,
   render_live_map,
   render_route_map,
   render_voyage_map,
+  render_schedule_map,
 }

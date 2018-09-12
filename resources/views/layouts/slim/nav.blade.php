@@ -29,7 +29,7 @@
       <ul>
         <li><a href="{{ url('/flights') }}">Flight Assignment</a></li>
         <li><a href="{{ url('/flights/bids') }}">Briefing Room</a></li>
-        <li><a href="#">Route Map</a></li>
+        <li><a href="{{ url('/flights/routes') }}">Route Map</a></li>
         <li><a href="{{ url('/pireps') }}">PIREP</a></li>
       </ul>
     </div><!-- dropdown-menu -->

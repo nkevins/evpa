@@ -12,6 +12,9 @@ Route::group([], function () {
     Route::get('news', 'NewsController@index');
     Route::get('status', 'StatusController@status');
     Route::get('version', 'StatusController@status');
+    
+    Route::get('flights/airports/{airline_id}', 'FlightController@route_airports_geojson');
+    Route::get('flights/destination/{airline_id}/{departure}', 'FlightController@route_destination_geojson');
 });
 
 /*

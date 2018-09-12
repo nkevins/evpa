@@ -130,4 +130,58 @@ class FlightRepository extends Repository implements CacheableInterface
 
         return $this;
     }
+    
+    /**
+     * Get all airports which is used in schedule
+     * 
+     * @param      $airline_id
+     * 
+     * @return Airport
+     */
+    public function getFlightAirport($airline_id) 
+    {
+        $all_flights = Flight::with('dpt_airport', 'arr_airport')
+                            ->where('airline_id', $airline_id)
+                            ->where('active', 1)
+                            ->where('visible', 1)->get();
+                            
+        $airports = [];
+        foreach ($all_flights as $f) {
+            if (!isset($airports[$f->dpt_airport_id])) {
+                $airports[$f->dpt_airport_id] = $f->dpt_airport;
+            }
+            
+            if (!isset($airports[$f->arr_airport_id])) {
+                $airports[$f->arr_airport_id] = $f->arr_airport;
+            }
+        }
+        
+        return $airports;
+    }
+    
+    /**
+     * Get all destination airports from a departure point
+     * 
+     * @param      $airline_id
+     * @param      $departure
+     * 
+     * @return Airport
+     */
+    public function getDestinationAirport($airline_id, $departure)
+    {
+        $all_airports = Flight::with('arr_airport')
+                            ->where('airline_id', $airline_id)
+                            ->where('dpt_airport_id', $departure)
+                            ->where('active', 1)
+                            ->where('visible', 1)->get();
+                            
+        $airports = [];
+        foreach ($all_airports as $a) {
+            if (!isset($airports[$a->arr_airport_id])) {
+                $airports[$a->arr_airport_id] = $a->arr_airport;
+            }
+        }
+        
+        return $airports;
+    }
 }

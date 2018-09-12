@@ -123,7 +123,7 @@ class FlightController extends Controller
         }
 
         $flights = $this->flightRepo
-            ->with(['dpt_airport', 'arr_airport', 'airline'])
+            ->with(['dpt_airport', 'arr_airport', 'airline', 'subfleets'])
             ->orderBy('flight_number', 'asc')
             ->orderBy('route_leg', 'asc')
             ->paginate();
@@ -134,7 +134,7 @@ class FlightController extends Controller
         
         // Get airport list for search
         $all_flights = Flight::with('dpt_airport', 'arr_airport')
-                            ->where('airline_id', $airlineId)->get();
+                            ->where($where)->get();
             
         $dep_apts[''] = '';
         $arr_apts[''] = '';
@@ -297,7 +297,7 @@ class FlightController extends Controller
             
         // Get airport list for search
         $all_flights = Flight::with('dpt_airport', 'arr_airport')
-                            ->where('airline_id', $airlineId)->get();
+                            ->where($where)->get();
             
         $dep_apts[''] = '';
         $arr_apts[''] = '';
@@ -347,5 +347,15 @@ class FlightController extends Controller
             'flight'       => $flight,
             'map_features' => $map_features,
         ]);
+    }
+    
+    /**
+     * Show the flight routes page
+     * 
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+     */
+    public function showFlightRoutes()
+    {
+        return view ('flights.routes');
     }
 }

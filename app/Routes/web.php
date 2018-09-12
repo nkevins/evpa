@@ -34,6 +34,7 @@ Route::group([
 
     Route::get('flights/bids', 'FlightController@bidsEvpa')->name('flights.bids');
     Route::get('flights/search', 'FlightController@searchEvpa')->name('flights.search');
+    Route::get('flights/routes', 'FlightController@showFlightRoutes');
     //Route::resource('flights', 'FlightController');
     Route::get('flights', 'FlightController@indexEvpa')->name('flights.index');
     Route::get('flights/{id}', 'FlightController@show')->name('flights.show');
