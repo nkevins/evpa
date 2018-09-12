@@ -17,7 +17,7 @@ Route::group([
     'middleware' => ['role:admin|user'],
 ], function () {
     Route::get('dashboard', 'DashboardController@indexEpva');
-    
+
     Route::get('r/{id}', 'PirepController@show')->name('pirep.show.public');
     Route::get('p/{id}', 'ProfileController@show')->name('profile.show.public');
 
@@ -46,7 +46,7 @@ Route::group([
     Route::get('profile/regen_apikey', 'ProfileController@regen_apikey')
         ->name('profile.regen_apikey');
     Route::resource('profile', 'ProfileController');
-    
+
     // Customized
     Route::get('promotions', 'UserController@promotions');
     Route::get('last_landings', 'PirepController@lastLandings');

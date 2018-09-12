@@ -24,10 +24,10 @@ class VoyageMap extends Widget
     {
         $geoSvc = app(GeoService::class);
         $pirepRepo = app(PirepRepository::class);
-        
+
         $voyageMapData = $pirepRepo->getVoyageMapData($this->config['user']);
         $map_features = $geoSvc->voyageGeoJson($voyageMapData);
-        
+
         $center_coords = setting('acars.center_coords', '0,0');
         $center_coords = array_map(function ($c) {
             return (float) trim($c);

@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Interfaces\Controller;
 use App\Models\Bid;
-use App\Repositories\Criteria\WhereCriteria;
 use App\Repositories\FlightRepository;
 use App\Repositories\PirepRepository;
-use App\Services\GeoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,8 +14,8 @@ use Illuminate\Support\Facades\Auth;
  */
 class DashboardController extends Controller
 {
-    private $pirepRepo,
-            $flightRepo;
+    private $pirepRepo;
+    private $flightRepo;
 
     /**
      * DashboardController constructor.
@@ -25,10 +23,9 @@ class DashboardController extends Controller
      * @param PirepRepository $pirepRepo
      */
     public function __construct(
-        PirepRepository $pirepRepo, 
+        PirepRepository $pirepRepo,
         FlightRepository $flightRepo
-    )
-    {
+    ) {
         $this->pirepRepo = $pirepRepo;
         $this->flightRepo = $flightRepo;
     }
@@ -55,7 +52,7 @@ class DashboardController extends Controller
             'last_pirep'      => $last_pirep,
         ]);
     }
-    
+
     /**
      * Show the application dashboard.
      */
@@ -63,24 +60,24 @@ class DashboardController extends Controller
     {
         $last_pirep = null;
         $user = Auth::user();
-        
+
         // Get last pirep
         $last_pirep = $this->pirepRepo->getLastPirep($user, 5);
 
         // Get the current airport for the weather
         $current_airport = $user->curr_airport_id ?? $user->home_airport_id;
-        
+
         // Get random flights
         $departureAirport = null;
         if (setting('pilots.only_flights_from_current')) {
-           $departureAirport = Auth::user()->curr_airport_id;
+            $departureAirport = Auth::user()->curr_airport_id;
         }
         $flights = $this->flightRepo->getRandomFlight(Auth::user()->airline_id);
-        
+
         // Get current bid
         $bids = Bid::where(['user_id' => $user->id])
             ->with(['flight', 'flight.airline'])->get();
-        
+
         // Get statistic
         $statistics = $this->pirepRepo->getUserPirepStatistic($user);
 

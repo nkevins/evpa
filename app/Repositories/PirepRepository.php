@@ -71,13 +71,13 @@ class PirepRepository extends Repository
 
         return $pireps;
     }
-    
+
     /**
      * Get latest pirep with / without limit
-     * 
-     * @param User $user
+     *
+     * @param User     $user
      * @param int|null $limit
-     * 
+     *
      * @return Pirep
      */
     public function getLastPirep(User $user, $limit = null)
@@ -86,16 +86,17 @@ class PirepRepository extends Repository
                     ->whereNotIn('state', [
                         PirepState::CANCELLED,
                         PirepState::DRAFT,
-                        PirepState::IN_PROGRESS,])
+                        PirepState::IN_PROGRESS, ])
                     ->orderBy('created_at', 'desc')->limit($limit)->get();
-        
+
         return $pireps;
     }
-    
+
     /**
      * Get raw data airport points for voyage map
-     * 
+     *
      * @param User $user
+     *
      * @return mix
      */
     public function getVoyageMapData(User $user)
@@ -107,18 +108,18 @@ class PirepRepository extends Repository
                     from pireps p inner join 
                     airports da on da.id = p.dpt_airport_id inner join 
                     airports aa on aa.id = p.arr_airport_id 
-                    where user_id = ?', 
+                    where user_id = ?',
                     [$user->id]
                 );
-        
+
         return $pireps;
     }
-    
+
     /**
-     * 
      * Get user statistic
+     *
      * @param User
-     * 
+     *
      * @return mixed
      */
     public function getUserPirepStatistic(User $user)
@@ -129,21 +130,21 @@ class PirepRepository extends Repository
                                             avg(landing_rate) as avg_rate,
                                             avg(distance) as avg_distance,
                                             avg(flight_time) as avg_flight_time'
-                                        )) 
+                                        ))
                         ->where('user_id', $user->id)
                         ->first();
-                        
+
         $thisMonthFlight = DB::table('pireps')
                             ->where('user_id', $user->id)
                             ->where('created_at', '>=', Carbon::now()->startOfMonth())
                             ->count();
-                            
+
         $lastMonthFlight = DB::table('pireps')
                             ->where('user_id', $user->id)
                             ->where('created_at', '>=', Carbon::now()->subMonth()->startOfMonth())
                             ->where('created_at', '<', Carbon::now()->startOfMonth())
                             ->count();
-        
+
         $topDepartures = DB::table('pireps')
                             ->join('airports', 'pireps.dpt_airport_id', '=', 'airports.id')
                             ->where('user_id', $user->id)
@@ -151,15 +152,15 @@ class PirepRepository extends Repository
                             ->select(DB::raw('airports.id, airports.iata, airports.icao, count(*) as count'))
                             ->orderBy(DB::raw('count(*)'), 'desc')
                             ->limit(5)->get();
-       
+
         $topDestination = DB::table('pireps')
                             ->join('airports', 'pireps.arr_airport_id', '=', 'airports.id')
                             ->where('user_id', $user->id)
                             ->groupBy('airports.id', 'airports.iata')
                             ->select(DB::raw('airports.id, airports.iata, airports.icao, count(*) as count'))
                             ->orderBy(DB::raw('count(*)'), 'desc')
-                            ->limit(5)->get(); 
-        
+                            ->limit(5)->get();
+
         return [
             'max_landing_rate' => is_null($stats->max_rate) ? 0 : $stats->max_rate,
             'min_landing_rate' => is_null($stats->min_rate) ? 0 : $stats->min_rate,
@@ -169,7 +170,7 @@ class PirepRepository extends Repository
             'this_mth_flight'  => $thisMonthFlight,
             'last_mth_flight'  => $lastMonthFlight,
             'top_departure'    => $topDepartures,
-            'top_destination'  => $topDestination
+            'top_destination'  => $topDestination,
         ];
     }
 }

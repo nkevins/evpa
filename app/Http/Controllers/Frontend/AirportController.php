@@ -60,7 +60,7 @@ class AirportController extends Controller
             'outbound_flights' => $outbound_flights,
         ]);
     }
-    
+
     /**
      * Show the airport
      *

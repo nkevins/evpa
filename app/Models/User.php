@@ -219,18 +219,17 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Rank::class, 'rank_id');
     }
-    
+
     /**
      * Get user citizenship status
-     * 
+     *
      * @return string
      */
     public function getCitizenshipStatus()
     {
         if (Carbon\Carbon::now()->diffInDays(Carbon\Carbon::parse($this->created_at)) <= 365) {
-            return "Short-term permit";
-        } else {
-            return "Residence permit";
+            return 'Short-term permit';
         }
+        return 'Residence permit';
     }
 }

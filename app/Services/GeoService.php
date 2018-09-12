@@ -388,53 +388,52 @@ class GeoService extends Service
             'actual_route_line'   => $actual->getLine(),
         ];
     }
-    
+
     /**
      * Return a GeoJSON FeatureCollection for a voyage map
-     * 
+     *
      * @param $voyages
-     * 
+     *
      * @return array
      */
-    public function voyageGeoJson($voyages) 
+    public function voyageGeoJson($voyages)
     {
-        $routes = array();
+        $routes = [];
         $route = new GeoJson();
 
         foreach ($voyages as $v) {
-            ## Departure Airport
+            //# Departure Airport
             $route->addPoint($v->dep_lat, $v->dep_lon, [
                 'name'  => $v->dep_icao,
                 'popup' => $v->dep_name,
                 'icon'  => 'airport',
             ]);
-            
-            ## Destination Airport
+
+            //# Destination Airport
             $route->addPoint($v->des_lat, $v->des_lon, [
                 'name'  => $v->des_icao,
                 'popup' => $v->des_name,
                 'icon'  => 'airport',
             ]);
-            
-            array_push($routes, ['route_points' => $route->getPoints(), 
-                'planned_route_line' => $route->getLine()]);
+
+            array_push($routes, ['route_points' => $route->getPoints(),
+                'planned_route_line'            => $route->getLine(), ]);
         }
-        
 
         return $routes;
     }
-    
+
     /**
      * Return a GeoJSON FeatureCollection for airport points
-     * 
+     *
      * @param $airports
-     * 
+     *
      * @return array
      */
     public function scheduleMapAirportGeoJson($airports)
     {
         $apts = new GeoJson();
-        
+
         foreach ($airports as $a) {
             $apts->addPoint($a->lat, $a->lon, [
                 'name'  => $a->icao,
@@ -442,30 +441,30 @@ class GeoService extends Service
                 'icon'  => 'airport',
             ]);
         }
-        
+
         return $apts->getPoints();
     }
-    
+
     /**
      * Return a GeoJSON FeatureCollection for route lines
      * from a departure point to all destinations
-     * 
+     *
      * @param $departure
      * @param $destinations
-     * 
+     *
      * @return array
      */
     public function scheduleMapRouteGeoJson($departure, $destinations)
     {
         $dep = $this->airportRepo->find($departure);
-        
+
         $routes = new GeoJson();
-        
+
         foreach ($destinations as $arr) {
             $routes->addPoint($dep->lat, $dep->lon, []);
             $routes->addPoint($arr->lat, $arr->lon, []);
         }
-        
+
         return $routes->getLine();
     }
 }

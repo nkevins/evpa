@@ -13,7 +13,7 @@ class PilotPromotionListener extends Listener
 {
     /**
      * Store rank promotion into history table
-     * 
+     *
      * @param UserStatsChanged $event
      */
     public function handle(UserStatsChanged $event): void

@@ -27,7 +27,7 @@ class HomeController extends Controller
             'users' => $users,
         ]);
     }
-    
+
     /**
      * Show the application dashboard.
      */
@@ -36,7 +36,7 @@ class HomeController extends Controller
         if (Auth::user()) {
             return redirect('dashboard');
         }
-        
-        return view ('home');
+
+        return view('home');
     }
 }

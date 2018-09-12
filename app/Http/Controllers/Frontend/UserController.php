@@ -61,7 +61,7 @@ class UserController extends Controller
             'users'   => $users,
         ]);
     }
-    
+
     /**
      * @param Request $request
      *
@@ -91,18 +91,18 @@ class UserController extends Controller
             'users'   => $users,
         ]);
     }
-    
+
     /**
      * Display Crew Promotion page
-     * 
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */ 
+     */
     public function promotions()
     {
         $promotions = $this->rankHistoryRepo->getPromotionList();
-        
+
         return view('users.promotions', [
-              'promotions' => $promotions
+              'promotions' => $promotions,
         ]);
     }
 }
