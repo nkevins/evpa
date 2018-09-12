@@ -93,7 +93,7 @@ class FlightController extends Controller
             'saved'    => $saved_flights,
         ]);
     }
-    
+
     /**
      * @param Request $request
      *
@@ -130,23 +130,22 @@ class FlightController extends Controller
 
         $saved_flights = Bid::where('user_id', Auth::id())
             ->pluck('flight_id')->toArray();
-            
-        
+
         // Get airport list for search
         $all_flights = Flight::with('dpt_airport', 'arr_airport')
                             ->where($where)->get();
-            
+
         $dep_apts[''] = '';
         $arr_apts[''] = '';
-        
+
         foreach ($all_flights as $f) {
             $dep_apts[$f->dpt_airport->icao] = $f->dpt_airport->icao.' - '.$f->dpt_airport->name;
             ksort($dep_apts);
-            
+
             $arr_apts[$f->arr_airport->icao] = $f->arr_airport->icao.' - '.$f->arr_airport->name;
             ksort($arr_apts);
         }
-        
+
         // Get aircraft list for search
         $subfleets_list[''] = '';
         $subfleets = $this->subfleetRepo->findWhere(['airline_id' => $airlineId]);
@@ -155,10 +154,10 @@ class FlightController extends Controller
         }
 
         return view('flights.index', [
-            'flights'  => $flights,
-            'saved'    => $saved_flights,
-            'dep_apts' => $dep_apts,
-            'arr_apts' => $arr_apts,
+            'flights'   => $flights,
+            'saved'     => $saved_flights,
+            'dep_apts'  => $dep_apts,
+            'arr_apts'  => $arr_apts,
             'subfleets' => $subfleets_list,
         ]);
     }
@@ -185,7 +184,7 @@ class FlightController extends Controller
             'saved'    => $saved_flights,
         ]);
     }
-    
+
     /**
      * Find the user's bids and display them
      *
@@ -201,8 +200,8 @@ class FlightController extends Controller
         $saved_flights = $flights->pluck('id')->toArray();
 
         return view('flights.bids', [
-            'flights'  => $flights,
-            'saved'    => $saved_flights,
+            'flights' => $flights,
+            'saved'   => $saved_flights,
         ]);
     }
 
@@ -253,7 +252,7 @@ class FlightController extends Controller
             'saved'    => $saved_flights,
         ]);
     }
-    
+
     /**
      * Make a search request using the Repository search
      *
@@ -294,22 +293,22 @@ class FlightController extends Controller
 
         $saved_flights = Bid::where('user_id', Auth::id())
             ->pluck('flight_id')->toArray();
-            
+
         // Get airport list for search
         $all_flights = Flight::with('dpt_airport', 'arr_airport')
                             ->where($where)->get();
-            
+
         $dep_apts[''] = '';
         $arr_apts[''] = '';
-        
+
         foreach ($all_flights as $f) {
             $dep_apts[$f->dpt_airport->icao] = $f->dpt_airport->icao.' - '.$f->dpt_airport->name;
             ksort($dep_apts);
-            
+
             $arr_apts[$f->arr_airport->icao] = $f->arr_airport->icao.' - '.$f->arr_airport->name;
             ksort($arr_apts);
         }
-        
+
         // Get aircraft list for search
         $subfleets_list[''] = '';
         $subfleets = $this->subfleetRepo->findWhere(['airline_id' => $airlineId]);
@@ -318,10 +317,10 @@ class FlightController extends Controller
         }
 
         return view('flights.index', [
-            'flights'  => $flights,
-            'saved'    => $saved_flights,
-            'dep_apts' => $dep_apts,
-            'arr_apts' => $arr_apts,
+            'flights'   => $flights,
+            'saved'     => $saved_flights,
+            'dep_apts'  => $dep_apts,
+            'arr_apts'  => $arr_apts,
             'subfleets' => $subfleets_list,
         ]);
     }
@@ -348,14 +347,14 @@ class FlightController extends Controller
             'map_features' => $map_features,
         ]);
     }
-    
+
     /**
      * Show the flight routes page
-     * 
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      */
     public function showFlightRoutes()
     {
-        return view ('flights.routes');
+        return view('flights.routes');
     }
 }

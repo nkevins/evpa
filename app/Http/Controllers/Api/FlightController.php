@@ -138,7 +138,7 @@ class FlightController extends Controller
 
         return NavdataResource::collection($route);
     }
-    
+
     /**
      * Get all airport points flown by an airline
      *
@@ -151,10 +151,10 @@ class FlightController extends Controller
     {
         $airports = $this->flightRepo->getFlightAirport($airline_id);
         $map_features = $this->geoSvc->scheduleMapAirportGeoJson($airports);
-        
+
         return $map_features;
     }
-    
+
     /**
      * Get all route lines from a departure airport
      *
@@ -168,7 +168,7 @@ class FlightController extends Controller
     {
         $destination_airports = $this->flightRepo->getDestinationAirport($airline_id, $departure);
         $map_features = $this->geoSvc->scheduleMapRouteGeoJson($departure, $destination_airports);
-        
+
         return $map_features;
     }
 }

@@ -6,7 +6,6 @@ use App\Interfaces\Model;
 
 /**
  * Class History Rank
- * @package App\Models
  */
 class RankHistory extends Model
 {
@@ -19,12 +18,12 @@ class RankHistory extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-     
+
     public function oldRank()
     {
         return $this->belongsTo(Rank::class, 'old_rank_id');
     }
-    
+
     public function newRank()
     {
         return $this->belongsTo(Rank::class, 'new_rank_id');

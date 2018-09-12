@@ -15,12 +15,11 @@ use DB;
  */
 class StatisticService extends Service
 {
- 
     /**
      * Get company statistic data
-     * 
+     *
      * @return array
-     */   
+     */
     public function getCompanyStatistic()
     {
         $company_statistic = [];
@@ -39,15 +38,15 @@ class StatisticService extends Service
         $company_statistic['schedule_count_omdb'] = Flight::where('dpt_airport_id', 'OMDB')->orWhere('arr_airport_id', 'OMDB')->count();
         $company_statistic['schedule_count_omdw'] = Flight::where('dpt_airport_id', 'OMDW')->orWhere('arr_airport_id', 'OMDW')->count();
         $company_statistic['last_updated_date'] = Carbon::now();
-        
+
         return $company_statistic;
     }
-    
+
     /**
      * Get pilot statistic data
-     * 
+     *
      * @return array
-     */   
+     */
     public function getPilotStatistic()
     {
         $pilot_statistic = [];
@@ -56,19 +55,19 @@ class StatisticService extends Service
         $pilot_statistic['max_flight_time'] = User::where('state', UserState::ACTIVE)->orderBy('flight_time', 'desc')->first();
         $pilot_statistic['min_flight_time'] = User::where('state', UserState::ACTIVE)->orderBy('flight_time', 'asc')->first();
         $pilot_statistic['max_distance'] = DB::table('users')
-                                        	->join('pireps', 'users.id', '=', 'pireps.user_id')
-                                        	->groupBy('users.name')
-                                        	->select(DB::raw('users.name, sum(distance) as distance'))
-                                        	->orderBy(DB::raw('sum(distance)'), 'desc')
-                                        	->limit(1)
-                                        	->first();
-    	$pilot_statistic['min_distance'] = DB::table('users')
-                                        	->join('pireps', 'users.id', '=', 'pireps.user_id')
-                                        	->groupBy('users.name')
-                                        	->select(DB::raw('users.name, sum(distance) as distance'))
-                                        	->orderBy(DB::raw('sum(distance)'), 'asc')
-                                        	->limit(1)
-                                        	->first();
+                                            ->join('pireps', 'users.id', '=', 'pireps.user_id')
+                                            ->groupBy('users.name')
+                                            ->select(DB::raw('users.name, sum(distance) as distance'))
+                                            ->orderBy(DB::raw('sum(distance)'), 'desc')
+                                            ->limit(1)
+                                            ->first();
+        $pilot_statistic['min_distance'] = DB::table('users')
+                                            ->join('pireps', 'users.id', '=', 'pireps.user_id')
+                                            ->groupBy('users.name')
+                                            ->select(DB::raw('users.name, sum(distance) as distance'))
+                                            ->orderBy(DB::raw('sum(distance)'), 'asc')
+                                            ->limit(1)
+                                            ->first();
         $pilot_statistic['last_pirep'] = Pirep::with('user')->orderBy('created_at', 'desc')->limit(1)->first();
         $pilot_statistic['all_hours'] = Pirep::sum('flight_time');
         $pilot_statistic['all_distance'] = Pirep::sum('distance');
@@ -79,15 +78,15 @@ class StatisticService extends Service
         $pilot_statistic['avg_td'] = Pirep::avg('landing_rate');
         $pilot_statistic['min_last_td'] = Pirep::with('user')->where('created_at', '>=', Carbon::now()->subDays(30))->orderBy('landing_rate', 'desc')->limit(1)->first();
         $pilot_statistic['max_last_td'] = Pirep::with('user')->where('created_at', '>=', Carbon::now()->subDays(30))->orderBy('landing_rate', 'asc')->limit(1)->first();
-        
+
         return $pilot_statistic;
     }
-    
+
     /**
      * Get activity statistic data
-     * 
+     *
      * @return array
-     */   
+     */
     public function getActivityStatistic()
     {
         $activity_stats = [];
@@ -115,7 +114,7 @@ class StatisticService extends Service
             }
             $i++;
         }
-                                        
+
         $activity_stats['td'] = DB::table('pireps')
                                         ->select(DB::raw('year(submitted_at) as year, month(submitted_at) as month, count(*) as count, 
                                             max(landing_rate) as max_td, min(landing_rate) as min_td'))
@@ -132,7 +131,7 @@ class StatisticService extends Service
                 $prev_atd = $activity_stats['td'][$i - 1];
                 $atd->count_percentage = round(($atd->count - $prev_atd->count) / $prev_atd->count * 100, 2);
             }
-            
+
             $atd->max_td_name = DB::table('pireps')
                                     ->join('users', 'users.id', 'pireps.user_id')
                                     ->where('pireps.state', '2')
@@ -155,15 +154,15 @@ class StatisticService extends Service
                                     ->first()->name;
             $i++;
         }
-        
+
         return $activity_stats;
     }
-    
+
     /**
      * Get airport statistic data
-     * 
+     *
      * @return array
-     */   
+     */
     public function getAirportStatistic()
     {
         $airport_stats = [];
@@ -189,7 +188,7 @@ class StatisticService extends Service
                                             ->select(DB::raw('count(*) as count, pireps.dpt_airport_id as dpt_icao, dpt.name as dpt_name, pireps.arr_airport_id as arr_icao, arr.name as arr_name'))
                                             ->limit(10)
                                             ->get();
-                                            
+
         return $airport_stats;
     }
 }

@@ -59,26 +59,26 @@ class FlightRepository extends Repository implements CacheableInterface
 
         return $this->findWhere($where);
     }
-    
+
     /**
      * Get 5 random schedule
-     * 
+     *
      * @param      $airline_id
      * @param null $departure_airport
-     * 
+     *
      * @return Flight
-     */ 
+     */
     public function getRandomFlight($airline_id, $departure_airport = null)
     {
         $where = [
-            'airline_id'    => $airline_id,
-            'active'        => true,
+            'airline_id' => $airline_id,
+            'active'     => true,
         ];
-        
+
         if (filled($departure_airport)) {
             $where['dpt_airport_id'] = $departure_airport;
         }
-        
+
         return Flight::inRandomOrder()->where($where)
             ->with('subfleets', 'airline')->take(5)->get();
     }
@@ -130,41 +130,41 @@ class FlightRepository extends Repository implements CacheableInterface
 
         return $this;
     }
-    
+
     /**
      * Get all airports which is used in schedule
-     * 
-     * @param      $airline_id
-     * 
+     *
+     * @param   $airline_id
+     *
      * @return Airport
      */
-    public function getFlightAirport($airline_id) 
+    public function getFlightAirport($airline_id)
     {
         $all_flights = Flight::with('dpt_airport', 'arr_airport')
                             ->where('airline_id', $airline_id)
                             ->where('active', 1)
                             ->where('visible', 1)->get();
-                            
+
         $airports = [];
         foreach ($all_flights as $f) {
             if (!isset($airports[$f->dpt_airport_id])) {
                 $airports[$f->dpt_airport_id] = $f->dpt_airport;
             }
-            
+
             if (!isset($airports[$f->arr_airport_id])) {
                 $airports[$f->arr_airport_id] = $f->arr_airport;
             }
         }
-        
+
         return $airports;
     }
-    
+
     /**
      * Get all destination airports from a departure point
-     * 
-     * @param      $airline_id
-     * @param      $departure
-     * 
+     *
+     * @param   $airline_id
+     * @param   $departure
+     *
      * @return Airport
      */
     public function getDestinationAirport($airline_id, $departure)
@@ -174,14 +174,14 @@ class FlightRepository extends Repository implements CacheableInterface
                             ->where('dpt_airport_id', $departure)
                             ->where('active', 1)
                             ->where('visible', 1)->get();
-                            
+
         $airports = [];
         foreach ($all_airports as $a) {
             if (!isset($airports[$a->arr_airport_id])) {
                 $airports[$a->arr_airport_id] = $a->arr_airport;
             }
         }
-        
+
         return $airports;
     }
 }

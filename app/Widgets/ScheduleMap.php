@@ -22,7 +22,7 @@ class ScheduleMap extends Widget
     public function run()
     {
         $airlineRepo = app(AirlineRepository::class);
-        
+
         $center_coords = setting('acars.center_coords', '0,0');
         $center_coords = array_map(function ($c) {
             return (float) trim($c);
