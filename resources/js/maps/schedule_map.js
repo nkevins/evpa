@@ -124,10 +124,17 @@ export default (opts) => {
             }).addTo(map);
             
             routeLayer.geoJson(routeGeoJson);
+            
+            try {
+                map.fitBounds(routeLayer.getBounds())
+            } catch (e) {
+                console.log(e)
+            }
         });
     };
     
     map = draw_base_map(opts);
+    map.once('focus', function() { map.scrollWheelZoom.enable(); });
     
     // Redraw map when airline selection changed
     let airlineId = $('#airline').val();
