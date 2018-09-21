@@ -88,6 +88,8 @@ and being mindful of the rivets bindings
                         <table rv-show="has_data" id="live_flights_table" class="table table-striped">
                             <thead>
                                 <tr class="text-small header">
+                                    <td class="text-small">Airline</td>
+                                    <td class="text-small">Pilot</td>
                                     <td class="text-small">{{ trans_choice('common.flight', 2) }}</td>
                                     <td class="text-small">@lang('common.departure')</td>
                                     <td class="text-small">@lang('common.arrival')</td>
@@ -100,11 +102,13 @@ and being mindful of the rivets bindings
                             </thead>
                             <tbody>
                                 <tr rv-each-pirep="pireps">
+                                    <td><img rv-src="pirep.airline.logo" style="height:20px;" /></td>
+                                    <td>{ pirep.user.name }</td>
                                     <td><a href="#top_anchor" rv-on-click="controller.focusMarker">{ pirep.airline.icao }{ pirep.ident}</a> </td>
                                     {{-- Show the full airport name on hover --}}
                                     <td><span rv-title="pirep.dpt_airport.name">{ pirep.dpt_airport.icao }</span></td>
                                     <td><span rv-title="pirep.arr_airport.name">{ pirep.arr_airport.icao }</span></td>
-                                    <td>{ pirep.aircraft.name }</td>
+                                    <td>{ pirep.aircraft.icao } ({ pirep.aircraft.registration })</td>
                                     <td>{ pirep.position.altitude }</td>
                                     <td>{ pirep.position.gs }</td>
                                     <td>{ pirep.position.distance.{{setting('units.distance')}} } /

@@ -143,3 +143,19 @@
 .card .bg-danger {
   background-color: #d8131b !important;
 }
+
+.map-info-box {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    padding: 20px;
+    height: 100px;
+    z-index: 9999;
+    background-color: rgba(232, 232, 232, 0.9);
+}
+
+.map-info-label {
+    display:block;
+    padding: 5px;
+    background-color: rgba(232, 232, 232, 0.9);
+}

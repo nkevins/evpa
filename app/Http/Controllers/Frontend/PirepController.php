@@ -189,6 +189,30 @@ class PirepController extends Controller
             'pireps' => $pireps,
         ]);
     }
+    
+    /**
+     * @param Request $request
+     *
+     * @throws \Prettus\Repository\Exceptions\RepositoryException
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function indexEvpa(Request $request)
+    {
+        $user = Auth::user();
+
+        $where = [['user_id', $user->id]];
+        $where[] = ['state', '=', PirepState::ACCEPTED];
+
+        $this->pirepRepo->with(['airline', 'aircraft', 'dpt_airport', 'arr_airport'])
+            ->pushCriteria(new WhereCriteria($request, $where));
+        $pireps = $this->pirepRepo->orderBy('created_at', 'desc')->paginate();
+
+        return view('pireps.index', [
+            'user'   => $user,
+            'pireps' => $pireps,
+        ]);
+    }
 
     /**
      * @param $id
@@ -465,7 +489,7 @@ class PirepController extends Controller
      */
     public function lastLandings(Request $request)
     {
-        $where[] = ['state', '<>', PirepState::CANCELLED];
+        $where[] = ['state', '=', PirepState::ACCEPTED];
 
         $this->pirepRepo->pushCriteria(new WhereCriteria($request, $where));
         $pireps = $this->pirepRepo->with(['airline', 'dpt_airport',

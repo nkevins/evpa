@@ -35,17 +35,18 @@ Route::group([
     Route::get('flights/bids', 'FlightController@bidsEvpa')->name('flights.bids');
     Route::get('flights/search', 'FlightController@searchEvpa')->name('flights.search');
     Route::get('flights/routes', 'FlightController@showFlightRoutes');
-    //Route::resource('flights', 'FlightController');
+    Route::resource('flights', 'FlightController');
     Route::get('flights', 'FlightController@indexEvpa')->name('flights.index');
-    Route::get('flights/{id}', 'FlightController@show')->name('flights.show');
 
     Route::get('pireps/fares', 'PirepController@fares');
     Route::resource('pireps', 'PirepController');
+    Route::get('pireps', 'PirepController@indexEvpa')->name('pireps.index');
     Route::post('pireps/{id}/submit', 'PirepController@submit')->name('pireps.submit');
 
     Route::get('profile/regen_apikey', 'ProfileController@regen_apikey')
         ->name('profile.regen_apikey');
     Route::resource('profile', 'ProfileController');
+    Route::get('profile', 'ProfileController@indexEvpa');
 
     // Customized
     Route::get('promotions', 'UserController@promotions');

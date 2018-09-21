@@ -108,8 +108,8 @@ class PirepRepository extends Repository
                     from pireps p inner join 
                     airports da on da.id = p.dpt_airport_id inner join 
                     airports aa on aa.id = p.arr_airport_id 
-                    where user_id = ?',
-                    [$user->id]
+                    where user_id = ? and state = ?',
+                    [$user->id, PirepState::ACCEPTED]
                 );
 
         return $pireps;
@@ -132,22 +132,26 @@ class PirepRepository extends Repository
                                             avg(flight_time) as avg_flight_time'
                                         ))
                         ->where('user_id', $user->id)
+                        ->where('state', PirepState::ACCEPTED)
                         ->first();
 
         $thisMonthFlight = DB::table('pireps')
                             ->where('user_id', $user->id)
                             ->where('created_at', '>=', Carbon::now()->startOfMonth())
+                            ->where('state', PirepState::ACCEPTED)
                             ->count();
 
         $lastMonthFlight = DB::table('pireps')
                             ->where('user_id', $user->id)
                             ->where('created_at', '>=', Carbon::now()->subMonth()->startOfMonth())
                             ->where('created_at', '<', Carbon::now()->startOfMonth())
+                            ->where('state', PirepState::ACCEPTED)
                             ->count();
 
         $topDepartures = DB::table('pireps')
                             ->join('airports', 'pireps.dpt_airport_id', '=', 'airports.id')
                             ->where('user_id', $user->id)
+                            ->where('state', PirepState::ACCEPTED)
                             ->groupBy('airports.id', 'airports.iata')
                             ->select(DB::raw('airports.id, airports.iata, airports.icao, count(*) as count'))
                             ->orderBy(DB::raw('count(*)'), 'desc')
@@ -156,6 +160,7 @@ class PirepRepository extends Repository
         $topDestination = DB::table('pireps')
                             ->join('airports', 'pireps.arr_airport_id', '=', 'airports.id')
                             ->where('user_id', $user->id)
+                            ->where('state', PirepState::ACCEPTED)
                             ->groupBy('airports.id', 'airports.iata')
                             ->select(DB::raw('airports.id, airports.iata, airports.icao, count(*) as count'))
                             ->orderBy(DB::raw('count(*)'), 'desc')

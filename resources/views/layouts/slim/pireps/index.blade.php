@@ -11,7 +11,14 @@
     <div class="row row-sm">
         <div class="col-lg-12">
             <div class="section-wrapper">
-                @include('pireps.table')
+                <div class="row">
+                    @include('pireps.table')
+                </div>
+                <div class="row mg-t-20">
+                    <div class="col-12 text-center">
+                        {{ $pireps->links('pagination.default') }}
+                    </div>
+                </div>
             </div>
         </div>
     </div>

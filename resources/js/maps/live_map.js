@@ -150,7 +150,7 @@ export default (opts) => {
         /**
          * AJAX UPDATE
          */
-        const pirep_uri = opts.pirep_uri.replace('{id}', '');
+        const pirep_uri = opts.pirep_uri.replace('/{id}', '');
         let pireps = $.ajax({
             url: pirep_uri,
             dataType: 'json',

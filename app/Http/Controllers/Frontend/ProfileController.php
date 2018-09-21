@@ -7,6 +7,7 @@ use App\Interfaces\Controller;
 use App\Models\User;
 use App\Repositories\AirlineRepository;
 use App\Repositories\AirportRepository;
+use App\Repositories\PirepRepository;
 use App\Repositories\UserRepository;
 use App\Support\Countries;
 use Flash;
@@ -27,6 +28,7 @@ class ProfileController extends Controller
     private $airlineRepo;
     private $airportRepo;
     private $userRepo;
+    private $pirepRepo;
 
     /**
      * ProfileController constructor.
@@ -38,10 +40,12 @@ class ProfileController extends Controller
     public function __construct(
         AirlineRepository $airlineRepo,
         AirportRepository $airportRepo,
+        PirepRepository $pirepRepo,
         UserRepository $userRepo
     ) {
         $this->airlineRepo = $airlineRepo;
         $this->airportRepo = $airportRepo;
+        $this->pirepRepo = $pirepRepo;
         $this->userRepo = $userRepo;
     }
 
@@ -59,6 +63,22 @@ class ProfileController extends Controller
         return view('profile.index', [
             'user'     => Auth::user(),
             'airports' => $airports,
+        ]);
+    }
+    
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function indexEvpa()
+    {
+        $user = Auth::user();
+        
+        // Get statistic
+        $statistics = $this->pirepRepo->getUserPirepStatistic($user);
+        
+        return view('profile.index', [
+            'user'  => $user,
+            'stats' => $statistics,
         ]);
     }
 

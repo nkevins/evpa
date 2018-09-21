@@ -82,6 +82,28 @@
     <script src="{{ public_asset('/assets/frontend/js/app.js') }}"></script>
     @yield('scripts')
     
+    {{--
+    It's probably safe to keep this to ensure you're in compliance
+    with the EU Cookie Law https://privacypolicies.com/blog/eu-cookie-law
+    --}}
+    <script>
+      window.addEventListener("load", function () {
+        window.cookieconsent.initialise({
+          palette: {
+            popup: {
+              background: "#edeff5",
+              text: "#838391"
+            },
+            button: {
+              "background": "#067ec1"
+            }
+          },
+          position: "top",
+        })
+      });
+    </script>
+    {{-- End the required tags block --}}
+    
     <script>
       $(document).ready(function () {
           $(".select2").select2({width: 'resolve'});
