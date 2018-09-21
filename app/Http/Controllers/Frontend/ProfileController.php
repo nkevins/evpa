@@ -65,17 +65,17 @@ class ProfileController extends Controller
             'airports' => $airports,
         ]);
     }
-    
+
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function indexEvpa()
     {
         $user = Auth::user();
-        
+
         // Get statistic
         $statistics = $this->pirepRepo->getUserPirepStatistic($user);
-        
+
         return view('profile.index', [
             'user'  => $user,
             'stats' => $statistics,
