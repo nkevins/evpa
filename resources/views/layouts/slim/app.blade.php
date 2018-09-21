@@ -83,12 +83,33 @@
     <script src="{{ public_asset('/assets/slim/lib/Flot/js/jquery.flot.resize.js') }}"></script>
     <script src="{{ public_asset('/assets/slim/lib/peity/js/jquery.peity.js') }}"></script>
 
-    <!--<script src="{{ public_asset('/assets/slim/js/slim.js') }}"></script>-->
     <script src="{{ public_asset('/assets/slim/js/ResizeSensor.js') }}"></script>
     
     <script src="{{ public_asset('/assets/global/js/vendor.js') }}"></script>
     <script src="{{ public_asset('/assets/frontend/js/app.js') }}"></script>
     @yield('scripts')
+    
+    {{--
+    It's probably safe to keep this to ensure you're in compliance
+    with the EU Cookie Law https://privacypolicies.com/blog/eu-cookie-law
+    --}}
+    <script>
+      window.addEventListener("load", function () {
+        window.cookieconsent.initialise({
+          palette: {
+            popup: {
+              background: "#edeff5",
+              text: "#838391"
+            },
+            button: {
+              "background": "#067ec1"
+            }
+          },
+          position: "top",
+        })
+      });
+    </script>
+    {{-- End the required tags block --}}
     
     <script>
       $(document).ready(function () {
