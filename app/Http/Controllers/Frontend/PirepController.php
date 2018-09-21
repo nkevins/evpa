@@ -189,7 +189,7 @@ class PirepController extends Controller
             'pireps' => $pireps,
         ]);
     }
-    
+
     /**
      * @param Request $request
      *
