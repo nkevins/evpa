@@ -77,7 +77,7 @@ class ProfileController extends Controller
 
         // Get statistic
         $statistics = $this->pirepRepo->getUserPirepStatistic($user);
-        
+
         // Get pirep for logbook
         $where = [['user_id', $user->id]];
         $where[] = ['state', '=', PirepState::ACCEPTED];
