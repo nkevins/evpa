@@ -46,7 +46,7 @@ Route::group([
     Route::get('profile/regen_apikey', 'ProfileController@regen_apikey')
         ->name('profile.regen_apikey');
     Route::resource('profile', 'ProfileController');
-    Route::get('profile', 'ProfileController@indexEvpa');
+    Route::get('profile', 'ProfileController@indexEvpa')->name('profile.index');
 
     // Customized
     Route::get('promotions', 'UserController@promotions');

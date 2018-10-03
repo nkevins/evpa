@@ -53,7 +53,14 @@
                     Logbook
                 </div><!-- card-header -->
                 <div class="card-body bd bd-t-0">
-                    
+                    <div class="row">
+                        @include('profile.pirep_table')
+                    </div>
+                    <div class="row mg-t-20">
+                        <div class="col-12 text-center">
+                            {{ $pireps->links('pagination.default') }}
+                        </div>
+                    </div>
                 </div><!-- card-body -->
             </div><!-- card -->
         </div>

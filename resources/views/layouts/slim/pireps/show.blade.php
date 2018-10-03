@@ -133,7 +133,7 @@
                 <div class="card-body bd bd-t-0" style="height:400px; overflow:auto;">
                     <table class="table table-hover table-condensed" id="users-table">
                         <tbody>
-                        @foreach($pirep->acars_logs as $log)
+                        @foreach($pirep->acars_logs->sortBy('created_at') as $log)
                             <tr>
                                 <td nowrap="true">{{ Carbon\Carbon::parse($log->created_at)->format('d M y H:i:s') }} Z</td>
                                 <td>{{ $log->log }}</td>

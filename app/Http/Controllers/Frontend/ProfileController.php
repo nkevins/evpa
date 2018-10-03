@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Facades\Utils;
 use App\Interfaces\Controller;
+use App\Models\Enums\PirepState;
 use App\Models\User;
 use App\Repositories\AirlineRepository;
 use App\Repositories\AirportRepository;
+use App\Repositories\Criteria\WhereCriteria;
 use App\Repositories\PirepRepository;
 use App\Repositories\UserRepository;
 use App\Support\Countries;
@@ -69,16 +71,25 @@ class ProfileController extends Controller
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function indexEvpa()
+    public function indexEvpa(Request $request)
     {
         $user = Auth::user();
 
         // Get statistic
         $statistics = $this->pirepRepo->getUserPirepStatistic($user);
+        
+        // Get pirep for logbook
+        $where = [['user_id', $user->id]];
+        $where[] = ['state', '=', PirepState::ACCEPTED];
+
+        $this->pirepRepo->with(['airline', 'aircraft', 'dpt_airport', 'arr_airport'])
+            ->pushCriteria(new WhereCriteria($request, $where));
+        $pireps = $this->pirepRepo->orderBy('created_at', 'desc')->paginate();
 
         return view('profile.index', [
-            'user'  => $user,
-            'stats' => $statistics,
+            'user'   => $user,
+            'stats'  => $statistics,
+            'pireps' => $pireps,
         ]);
     }
 

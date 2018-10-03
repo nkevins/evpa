@@ -1,3 +1,10 @@
+<div class="profile-photo-container">
+    @if (Auth::user()->avatar != '')
+        <img src="{{ Auth::user()->avatar->url }}" alt="" />
+    @else
+        <img src="{{ public_asset('/assets/slim/img/default_avatar.jpg') }}" alt="" />
+    @endif
+</div>
 <table class="table table-striped table-borderless table-sm">
     <tr>
         <th scope="row">Name</th>

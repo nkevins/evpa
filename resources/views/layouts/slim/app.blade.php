@@ -36,6 +36,11 @@
           @if (Auth::check())
           <div class="dropdown dropdown-c">
             <a href="#" class="logged-user" data-toggle="dropdown">
+              @if (Auth::user()->avatar != '')
+                <img src="{{ Auth::user()->avatar->url }}" alt="" />
+              @else
+                <img src="{{ public_asset('/assets/slim/img/default_avatar.jpg') }}" alt="" />
+              @endif
               <span>{{ Auth::user()->name }}</span>
               <i class="fa fa-angle-down"></i>
             </a>
